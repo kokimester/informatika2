@@ -14,7 +14,7 @@ $dummy['match_count'] = 0;
 <div class="container">
     <div class="row text-black-50">
         <div class="col-9">
-            <table class="table table-striped table-bordered bg-light">
+            <table class="card table table-striped table-bordered bg-light">
                 <tr>
                     <th>
                         Player name
