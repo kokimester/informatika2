@@ -26,36 +26,36 @@ $points_change = round($ret[2],1);
 ?>
 
 <div class="container align-self-center">
-    <div class="row text-black-50">
+    <div class="row text-black-50 justify-content-md-center">
         <div class="col-12">
-            <table class="table table-striped table-bordered bg-light">
+            <table class="card table table-striped table-bordered bg-light align-middle text-center">
                 <tr>
-                    <th>
+                    <th class="col-2">
                         Player 1
                     </th>
-                    <th>
+                    <th class="col-1">
                         Elo
                     </th>
-                    <th>
+                    <th class="col-1">
                         List
                     </th>
-                    <th>
+                    <th class="col-1">
                         Points shot down
                     </th>
-                    <th>
+                    <th class="col-1 text-center">
                         VS.
                     </th>
-                    <th>
-                        Player 2
+                    <th class="col-1">
+                        Points shot down
                     </th>
-                    <th>
-                        Elo
-                    </th>
-                    <th>
+                    <th class="col-1">
                         List
                     </th>
-                    <th>
-                        Points shot down
+                    <th class="col-1">
+                        Elo
+                    </th>
+                    <th class="col-2">
+                        Player 2
                     </th>
                 </tr>
                 <!-- FOREACH IDE -->
@@ -70,7 +70,7 @@ $points_change = round($ret[2],1);
                     <td>
                         <?php if (isset($self['list'])) {
 
-                            echo `<a href={$self['list']}> Link </a>`;
+                            echo "<a href=".$self['list']."> Link </a>";
                         } else {
                             echo '<a>List not found</a>';
                         }
@@ -83,10 +83,7 @@ $points_change = round($ret[2],1);
                     <?php echo (($winner === $self) ? "Win - Lose" : "Lose - Win"); ?>
                     </td>
                     <td>
-                        <?php echo $opponent['name']; ?>
-                    </td>
-                    <td>
-                        <?php echo $opponent['elo'] . (($winner === $opponent) ? " +" . $points_change : " -" . $points_change); ?>
+                        <?php echo $opponent['shot-down'];?>
                     </td>
                     <td>
                         <?php if (isset($opponent['list'])) {
@@ -98,7 +95,10 @@ $points_change = round($ret[2],1);
                         ?>
                     </td>
                     <td>
-                        <?php echo $opponent['shot-down'];?>
+                        <?php echo $opponent['elo'] . (($winner === $opponent) ? " +" . $points_change : " -" . $points_change); ?>
+                    </td>
+                    <td class="text-right">
+                        <?php echo $opponent['name']; ?>
                     </td>
                 </tr>
             </table>
@@ -110,7 +110,7 @@ $points_change = round($ret[2],1);
 <div class="container">
     <div class="row text-center">
         <div class="col-12">
-            <form><a class="btn btn-lg btn-success" href="/new_match.php" role="button"><i class="fas fa-plus-circle"></i> Add new match</a></form>
+            <form><a class="btn btn-lg btn-success" href="new_match.php" role="button"><i class="fas fa-plus-circle"></i> Add new match</a></form>
         </div>
     </div>
 </div>
