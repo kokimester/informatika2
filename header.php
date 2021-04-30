@@ -1,6 +1,7 @@
 <?php 
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
+$activePage = basename($_SERVER['PHP_SELF'], ".php");
 ?>
 <!doctype html>
 <html>
