@@ -1,20 +1,100 @@
 <?php
- error_reporting ( E_ALL );
- ini_set("display_errors", 1);
 include 'header.php';
 include 'menu.php';
 include 'db.php';
+init_db();
 ?>
 
 <?php
-$dummy['name'] = 'Minta Janos';
-$dummy['elo'] = 1500;
-$dummy['match_count'] = 0;
+
+
+$link = opendb();
+if(!isset($_POST['searchBy'])){
+$query = "SELECT sub3.id, sub3.nev, sub3.elo, sum(sub3.win) as 'win', sum(sub3.lose) as 'lose' from (
+    (select sub1.id, sub1.nev, sub1.elo, sum(sub1.win) as 'win', 0 as 'lose' from (
+    select user.id, nev, elo, count(user.id) as 'win'
+    from user 
+    left outer join merkozes as mk on mk.player_1_id = user.id
+    where mk.player_1_points > mk.player_2_points
+    group by user.id
+    UNION
+    select user.id, nev, elo, count(user.id) as 'win'
+    from user 
+    left outer join merkozes as mk on mk.player_2_id = user.id
+    where mk.player_1_points < mk.player_2_points
+    group by user.id) as sub1
+    group by sub1.id)
+    UNION
+    (select sub2.id, sub2.nev, sub2.elo,0 as 'win', sum(sub2.lose) as 'lose' from (
+    select user.id, nev, elo, count(user.id) as 'lose'
+    from user 
+    left outer join merkozes as mk on mk.player_1_id = user.id
+    where mk.player_1_points < mk.player_2_points
+    group by user.id
+    UNION
+    select user.id, nev, elo, count(user.id) as 'lose'
+    from user 
+    left outer join merkozes as mk on mk.player_2_id = user.id
+    where mk.player_1_points > mk.player_2_points
+    group by user.id) as sub2
+    group by sub2.id)
+    ) as sub3
+    group by sub3.id
+    order by sub3.elo desc;";
+}
+else{
+$searchBy = mysqli_real_escape_string($link,$_POST['searchBy']);
+
+$searchByName="sub3.nev";
+$searchByDiscord="sub3.discordid";
+
+$criteria = (strpos($searchBy,'#') === false ? $searchByName : $searchByDiscord);
+
+$query = "SELECT sub3.id, sub3.nev,sub3.discordid, sub3.elo, sum(sub3.win) as 'win', sum(sub3.lose) as 'lose' from (
+    (select sub1.id, sub1.nev,sub1.discordid, sub1.elo, sum(sub1.win) as 'win', 0 as 'lose' from (
+    select user.id, nev,discordid, elo, count(user.id) as 'win'
+    from user 
+    left outer join merkozes as mk on mk.player_1_id = user.id
+    where mk.player_1_points > mk.player_2_points
+    group by user.id
+    UNION
+    select user.id, nev,discordid, elo, count(user.id) as 'win'
+    from user 
+    left outer join merkozes as mk on mk.player_2_id = user.id
+    where mk.player_1_points < mk.player_2_points
+    group by user.id) as sub1
+    group by sub1.id)
+    UNION
+    (select sub2.id, sub2.nev,sub2.discordid, sub2.elo,0 as 'win', sum(sub2.lose) as 'lose' from (
+    select user.id, nev,discordid, elo, count(user.id) as 'lose'
+    from user 
+    left outer join merkozes as mk on mk.player_1_id = user.id
+    where mk.player_1_points < mk.player_2_points
+    group by user.id
+    UNION
+    select user.id, nev,discordid, elo, count(user.id) as 'lose'
+    from user 
+    left outer join merkozes as mk on mk.player_2_id = user.id
+    where mk.player_1_points > mk.player_2_points
+    group by user.id) as sub2
+    group by sub2.id)
+    ) as sub3 
+    where ".$criteria." like '%$searchBy%'
+    group by sub3.id
+    order by sub3.elo desc;";
+}
+$eredmeny = mysqli_query($link, $query);
+
+
+if(isset($_GET['error'])){
+    echo "<script>alert('".$_GET['error']."')</script>";
+   }
+
 ?>
 <div class="container">
     <div class="row text-black-50">
         <div class="col-9">
-            <table class="card table table-striped table-bordered bg-light">
+            <table class="card table table-striped table-bordered bg-light align-middle text-center">
                 <tr>
                     <th>
                         Player name
@@ -22,46 +102,39 @@ $dummy['match_count'] = 0;
                     <th>
                         ELO points
                     </th>
-                    <th>
-                        Match count
+                    <th class="col-2">
+                        Win/Lose
                     </th>
-                    <th>
+                    <th class="col-2">
                         &nbsp;
                     </th>
-
                 </tr>
-                <!--  foreach resz-->
-                <tr>
-                    <td>
-                        <?php echo $dummy['name'];
-                        ?>
-                    </td>
-                    <td>
-                        <?php echo $dummy['elo'];
-                        ?>
-                    <td>
-                        <?php echo $dummy['match_count'];
-                        ?>
-                        </th>
-                        <td class="col-3">
-                        <button class="btn btn-sml btn-primary" href="profil.php">Check <?php echo $dummy['name']; ?>'s profile</button>
+                <?php while ($row = mysqli_fetch_array($eredmeny)) : ?>
+                    <tr>
+                        <td> <?= $row['nev'] ?></td>
+                        <td> <?= $row['elo'] ?></td>
+                        <td> <?= $row['win'].'/'.$row['lose']; ?> </td>
+                        <td> 
+                        <a class="btn btn-sml btn-primary" href=<?='profile.php?user='.$row['id']?>>Check <?php echo $row['nev']; ?>'s profile</a>
                         </td>
-                </tr>
+                    </tr>
+                <?php endwhile; ?>
             </table>
         </div>
 
         <div class="col-3">
-            <!--
-          <h1 class="text-white">Search for a player</h1>
+            
+          <h3 class="text-white">Search for a player</h3>
           <form method="POST">
             <input type="text" class="form-control" id="searchBy" name="searchBy">
             <input type="submit" class="btn-lg btn-primary mb-1 mt-2" value="Search"/>
           </form>
-           -->
+           
         </div>
     </div>
 </div>
 
-<?php 
-    include 'footer.php';
+<?php
+mysqli_close($link);
+include 'footer.php';
 ?>
