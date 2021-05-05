@@ -20,18 +20,24 @@
             <a class="<?= ($activePage == 'mymatches') ? 'active':''; ?> nav-link"
                 aria-current="page" href="mymatches.php">My matches</a>
           </li>
-        </ul>
-        <form><a class="btn btn-success" href="login.php" role="button">Login</a></form>
-        
+          <li class="nav-item">
+            <a class="<?= ($activePage == 'pending_matches') ? 'active':''; ?> nav-link"
+                aria-current="page" href="pending_matches.php">Pending matches</a>
+          </li>
+        </ul> 
+        <?php if( !(isset($_SESSION) && (isset($_SESSION['belepve'])) && ($_SESSION['belepve'] === true) ) ){ 
+         echo '<form><a class="btn btn-success" href="login.php" role="button">Login</a></form>';
+          } else{   
+         echo '<h4 class="text-white text-center mr-2"> Welcome, '.$_SESSION['nev'].'</h4><span>aaa</span><form><a class="btn btn-danger" href="logout.php" role="button" onclick="return confirm(\'Are you sure you want to logout?\');">Logout</a></form>';
+         } 
+
+        ?>
+        <!--<h1> Welcome, {$_SESSION['nev']}</h1> -->
         
       </div>
     </div>
   </nav>
-<!--
-  //   <% if((typeof session ==='undefined') || (typeof session.belepve === 'undefined') || (session.belepve !== true)){ %>
-    //        <form><a class="btn btn-success" href="/login" role="button">Login</a></form>
-      //      <% } else{ %>  
-        //      <form><a class="btn btn-danger" href="/logout" role="button" onclick="return confirm('Biztos, hogy ki akarsz jelentkezni?');">Logout</a></form>
-          //  <% } %>
-            // -->
+
+   
+         
   
