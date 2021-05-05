@@ -1,7 +1,9 @@
 <?php 
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
+session_start();
 ?>
+
 
 <!doctype html>
 <html lang="en">
@@ -42,15 +44,21 @@ ini_set("display_errors", 1);
     <link href="./css/signin.css" rel="stylesheet" type="text/css">
 </head>
 
+<?php 
+    include 'check_login_info.php';
+?>
+
+
 <body class="text-center">
     <main class="form-signin">
         <form method="POST">
             <img class="mb-4" src="./img/xwing_icon.png" alt="" width="230" height="70">
 
+            
             <h1 id="login-text" class="h3 mb-3 fw-normal"><?= (!isset($error)) ? 'Please log in' : $error ?></h1>
 
             <p class="text-dark mb-0">Not yet registered?</p>
-            <a class="btn btn-primary mb-1" href="register.php">Register</a>
+            <a class="btn btn-lg btn-primary mb-1" href="register.php">Register</a>
 
             <label for="email" class="visually-hidden">Email address</label>
             <input type="email" id="email" name="email" class="form-control mt-1" placeholder="Email address" required
@@ -58,7 +66,7 @@ ini_set("display_errors", 1);
             <label for="password" class="visually-hidden">Password</label>
             <input type="password" id="password" name="password" class="form-control" placeholder="Password"
                 required>
-                <a href="/newpassword">Forgotten password</a>
+                <a href="forgotten.php">Forgotten password</a>
             <div class="checkbox mb-3">
                 <label>
                     <input type="checkbox" value="remember-me"> Remember me
