@@ -10,32 +10,33 @@ init_db();
 
 $link = opendb();
 if(!isset($_POST['searchBy'])){
-$query = "SELECT sub3.id, sub3.nev, sub3.elo, sum(sub3.win) as 'win', sum(sub3.lose) as 'lose' from (
-    (select sub1.id, sub1.nev, sub1.elo, sum(sub1.win) as 'win', 0 as 'lose' from (
-    select user.id, nev, elo, count(user.id) as 'win'
+$query = "SELECT sub3.id, sub3.nev,sub3.discordid, sub3.elo, sum(sub3.win) as 'win', sum(sub3.lose) as 'lose' from (
+    (select mind.id, mind.nev,mind.discordid, mind.elo, 0 as 'win', 0 as 'lose' from user as mind) UNION
+    (select sub1.id, sub1.nev,sub1.discordid, sub1.elo, sum(sub1.win) as 'win', 0 as 'lose' from (
+    select user.id, nev,discordid, elo, count(user.id) as 'win'
     from user 
     left outer join merkozes as mk on mk.player_1_id = user.id
-    where mk.player_1_points > mk.player_2_points
+    where mk.player_1_points > mk.player_2_points  and mk.player_1_confirmed = '1' and mk.player_2_confirmed = '1'
     group by user.id
     UNION
-    select user.id, nev, elo, count(user.id) as 'win'
+    select user.id, nev,discordid, elo, count(user.id) as 'win'
     from user 
     left outer join merkozes as mk on mk.player_2_id = user.id
-    where mk.player_1_points < mk.player_2_points
+    where mk.player_1_points < mk.player_2_points  and mk.player_1_confirmed = '1' and mk.player_2_confirmed = '1'
     group by user.id) as sub1
     group by sub1.id)
     UNION
-    (select sub2.id, sub2.nev, sub2.elo,0 as 'win', sum(sub2.lose) as 'lose' from (
-    select user.id, nev, elo, count(user.id) as 'lose'
+    (select sub2.id, sub2.nev,sub2.discordid, sub2.elo,0 as 'win', sum(sub2.lose) as 'lose' from (
+    select user.id, nev,discordid, elo, count(user.id) as 'lose'
     from user 
     left outer join merkozes as mk on mk.player_1_id = user.id
-    where mk.player_1_points < mk.player_2_points
+    where mk.player_1_points < mk.player_2_points  and mk.player_1_confirmed = '1' and mk.player_2_confirmed = '1'
     group by user.id
     UNION
-    select user.id, nev, elo, count(user.id) as 'lose'
+    select user.id, nev,discordid, elo, count(user.id) as 'lose'
     from user 
     left outer join merkozes as mk on mk.player_2_id = user.id
-    where mk.player_1_points > mk.player_2_points
+    where mk.player_1_points > mk.player_2_points  and mk.player_1_confirmed = '1' and mk.player_2_confirmed = '1'
     group by user.id) as sub2
     group by sub2.id)
     ) as sub3
@@ -51,17 +52,18 @@ $searchByDiscord="sub3.discordid";
 $criteria = (strpos($searchBy,'#') === false ? $searchByName : $searchByDiscord);
 
 $query = "SELECT sub3.id, sub3.nev,sub3.discordid, sub3.elo, sum(sub3.win) as 'win', sum(sub3.lose) as 'lose' from (
+    (select mind.id, mind.nev,mind.discordid, mind.elo, 0 as 'win', 0 as 'lose' from user as mind) UNION
     (select sub1.id, sub1.nev,sub1.discordid, sub1.elo, sum(sub1.win) as 'win', 0 as 'lose' from (
     select user.id, nev,discordid, elo, count(user.id) as 'win'
     from user 
     left outer join merkozes as mk on mk.player_1_id = user.id
-    where mk.player_1_points > mk.player_2_points
+    where mk.player_1_points > mk.player_2_points  and mk.player_1_confirmed = '1' and mk.player_2_confirmed = '1'
     group by user.id
     UNION
     select user.id, nev,discordid, elo, count(user.id) as 'win'
     from user 
     left outer join merkozes as mk on mk.player_2_id = user.id
-    where mk.player_1_points < mk.player_2_points
+    where mk.player_1_points < mk.player_2_points  and mk.player_1_confirmed = '1' and mk.player_2_confirmed = '1'
     group by user.id) as sub1
     group by sub1.id)
     UNION
@@ -69,13 +71,13 @@ $query = "SELECT sub3.id, sub3.nev,sub3.discordid, sub3.elo, sum(sub3.win) as 'w
     select user.id, nev,discordid, elo, count(user.id) as 'lose'
     from user 
     left outer join merkozes as mk on mk.player_1_id = user.id
-    where mk.player_1_points < mk.player_2_points
+    where mk.player_1_points < mk.player_2_points  and mk.player_1_confirmed = '1' and mk.player_2_confirmed = '1'
     group by user.id
     UNION
     select user.id, nev,discordid, elo, count(user.id) as 'lose'
     from user 
     left outer join merkozes as mk on mk.player_2_id = user.id
-    where mk.player_1_points > mk.player_2_points
+    where mk.player_1_points > mk.player_2_points  and mk.player_1_confirmed = '1' and mk.player_2_confirmed = '1'
     group by user.id) as sub2
     group by sub2.id)
     ) as sub3 
@@ -84,7 +86,7 @@ $query = "SELECT sub3.id, sub3.nev,sub3.discordid, sub3.elo, sum(sub3.win) as 'w
     order by sub3.elo desc;";
 }
 $eredmeny = mysqli_query($link, $query);
-
+print_r($eredmeny);
 
 if(isset($_GET['error'])){
     echo "<script>alert('".$_GET['error']."')</script>";
@@ -94,7 +96,7 @@ if(isset($_GET['error'])){
 <div class="container">
     <div class="row text-black-50">
         <div class="col-9">
-            <table class="card table table-striped table-bordered bg-light align-middle text-center">
+            <table class="card table rounded table-striped table-bordered bg-light align-middle text-center">
                 <tr>
                     <th>
                         Player name
