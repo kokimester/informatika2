@@ -9,10 +9,9 @@ $pagetitle = 'My profile';
 <?php 
 
 if(isset($_GET['user'])){
-$userid = $_GET['user'];
+$userid = mysqli_real_escape_string($link,$_GET['user']);
 }
 else{
-  
   include_once 'check_if_logged_in.php';
   $userid = $_SESSION['userid'];
 }
@@ -32,7 +31,7 @@ $showEdit = ( isset($_SESSION['userid']) &&($userid == $_SESSION['userid']) ? tr
     <div class="container">
       <div class="row text-black-50">
         <div class="col-9">
-          <table class="table table-striped table-borderless bg-transparent align-middle text-center">
+          <table class="table rounded table-striped table-borderless bg-transparent align-middle text-center">
             <tr >
               <th class="col-3">
                 <h2 class="text-white">User data</h2>
