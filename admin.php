@@ -1,44 +1,53 @@
 <?php
-$pagetitle = 'My matches';
+$pagetitle = 'Pending matches';
 include 'header.php';
 include 'menu.php';
 include 'calculate_elo.php';
 include 'db.php';
 $link = opendb();
 include_once 'check_if_logged_in.php';
+
+    if( ($_SESSION['admin'] !== true)  )
+    {
+        header('Location: index.php?error=For admins only.');
+    }
+
 ?>
 
 <?php
 
-
-//sessionbol le lesz kerve
 $user['id'] = $_SESSION['userid'];
 
-$query = "SELECT * FROM merkozes WHERE (merkozes.player_1_id = '".$user['id']."' OR merkozes.player_2_id = '".$user['id']."');";
+if(isset($_POST['searchBy']))
+{
+    $searchBy=mysqli_real_escape_string($link, $_POST['searchBy']);
+    $subquery = mysqli_query($link, "SELECT * FROM user WHERE nev like '%$searchBy%';");
+    if($searchForUser = mysqli_fetch_assoc($subquery))
+    {
+        $query = "SELECT * FROM merkozes WHERE player_1_id = '".$searchForUser['id']."' OR player_2_id = '".$searchForUser['id']."'";
+    }
+    else
+    {
+        header('Location: admin.php?error=No such user.');
+    }
+}
+else
+{
+    $query = "SELECT * FROM merkozes";
+}
+
 $eredmeny = mysqli_query($link, $query);
 
-
-
-//$winner = (($self['shot-down'] > $opponent['shot-down']) ?  $self   :   $opponent);
-//$ret = EloRating($self['elo'], $opponent['elo'], 30, (($winner === $self) ? 1 : 2));
-//$points_change = round($ret[2], 1);
 
 if(isset($_GET['error'])){
  echo "<script>alert('".$_GET['error']."')</script>";
 }
 ?>
 
-<div class="container mb-3">
-    <div class="row text-center">
-        <div class="col-12">
-            <form><a class="btn btn-lg btn-success" href="new_match.php" role="button"><i class="fas fa-plus-circle"></i> Add new match</a></form>
-        </div>
-    </div>
-</div>
 
 <div class="container align-self-center">
     <div class="row text-black-50 justify-content-md-center">
-        <div class="col-12">
+        <div class="col-9">
             <table class="card table table-striped table-bordered bg-light align-middle text-center">
                 <tr>
                     <th class="col-2">
@@ -67,6 +76,9 @@ if(isset($_GET['error'])){
                     </th>
                     <th class="col-2">
                         Player 2
+                    </th>
+                    <th class="col-2">
+                    &nbsp;
                     </th>
                 </tr>
 
@@ -116,9 +128,6 @@ if(isset($_GET['error'])){
                             <?php echo $row['player_1_points']; ?>
                         </td>
                         <td>
-                            <a class="<?=($winner['id'] == $user['id'] ? "btn btn-success" : "btn btn-danger")?>" ><?=  ($winner['id'] == $user['id'] ? 'Win' : 'Lose') ?></a>
-                            <br>
-                            <?= ($row['player_1_confirmed'] && $row['player_2_confirmed']) ? '' : 'Awaiting confirmation'?>
                         </td>
                         <td>
                             <?php echo $row['player_2_points']; ?>
@@ -138,14 +147,44 @@ if(isset($_GET['error'])){
                         <td class="text-right">
                             <a class="btn btn-primary" href="<?="profile.php?user=". $player2['id'] ?>"> <?= $player2['nev'] ?> </a>
                         </td>
+                        <td>
+                        <a class="btn btn-danger" href="<?="delete_match.php?match=".$row['id']?>" onclick="return confirm('Are you sure you want to delete this match?');">  Delete </a>
+                        </td>
                     </tr>
                 <?php endwhile; ?>
             </table>
         </div>
+        <div class="col-3">
+            
+          <h3 class="text-white">Search for a player</h3>
+          <form method="POST">
+            <input type="text" class="form-control" id="searchBy" name="searchBy">
+            <input type="submit" class="btn-lg btn-primary mb-1 mt-2" value="Search"/>
+          </form>
+           
+        </div>
     </div>
 </div>
 
+
+<script type="text/javascript">
+  $(function() {
+     $( "#searchBy" ).autocomplete({
+       source: 'quick_db_search.php',
+     });
+  });
+</script>
+
+<!-- Script -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+ 
+<!-- jQuery UI -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" />
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+ 
+
+
+
 <?php
-mysqli_close($link);
 include 'footer.php';
 ?>

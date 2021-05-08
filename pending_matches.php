@@ -19,7 +19,6 @@ WHERE (merkozes.player_1_id = '".$user['id']."' OR merkozes.player_2_id = '".$us
 $eredmeny = mysqli_query($link, $query);
 
 //  7
-echo $eredmeny->num_rows;
 
 //$winner = (($self['shot-down'] > $opponent['shot-down']) ?  $self   :   $opponent);
 //$ret = EloRating($self['elo'], $opponent['elo'], 30, (($winner === $self) ? 1 : 2));

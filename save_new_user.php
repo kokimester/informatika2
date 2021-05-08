@@ -57,6 +57,6 @@
     $query = "INSERT INTO user(nev, email, jelszo) VALUES('".$nev."','".$email."','".$pass."');";
     mysqli_query($link, $query);
     mysqli_close($link);
-    header('Location: login.php');
+    header('Location: login.php?error=Succesfully registered.');
 }
     

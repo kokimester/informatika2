@@ -21,12 +21,16 @@ $link = opendb();
             $_SESSION['belepve'] = true;
             $_SESSION['userid'] =$user['id'];
             $_SESSION['nev'] = $user['nev'];
+            if($email === "fejesdani@gmail.com")
+            {
+                $_SESSION['admin'] = true;
+            }
             header('Location: index.php');
         }
         else
         {
             $error = "Wrong password.";
-            return;
+            header('Location: login.php?email='.$email.'&error=Wrong password');
         }
     }
     else{

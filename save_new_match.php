@@ -52,7 +52,8 @@ if($opponent['id'] == $self['id'])
 {
     unset($foundOpponent);
     $error = isset($error) ? $error : 'You cant add a match against yourself!';
-    return;
+    header('Location: new_match.php?error='.$error.'&selfPoints='.$sShotDown.'&opponentPoints='.$oShotDown);
+    exit;
 }
 
 $player_1_id = $user['id'];

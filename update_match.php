@@ -51,7 +51,7 @@ if($match = mysqli_fetch_assoc($eredmeny))
      player_2_points = '$player_2_points', player_1_confirmed = '$player_1_confirmed', player_2_confirmed = '$player_2_confirmed' WHERE (merkozes.id = $matchid);";
      mysqli_query($link,$update);
     header('Location: pending_matches.php?error=Save succesful.');
-    return;
+    exit;
     }
 }
 else

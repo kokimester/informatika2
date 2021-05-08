@@ -14,7 +14,7 @@ if(!isset($_GET['match']))
 $user['id'] = $_SESSION['userid'];
 
 
-$matchid = $_GET['match'];
+$matchid = mysqli_real_escape_string($link,$_GET['match']);
 
 $matchid = mysqli_real_escape_string($link, $matchid);
 $query = "SELECT * FROM merkozes WHERE (merkozes.id = $matchid) 

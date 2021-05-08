@@ -2,6 +2,14 @@
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 session_start();
+
+
+if(isset($_GET['error'])){
+    echo "<script>alert('".$_GET['error']."')</script>";
+   }
+if(isset($_GET['email'])){
+    $email = $_GET['email'];
+   }
 ?>
 
 
@@ -62,7 +70,7 @@ session_start();
 
             <label for="email" class="visually-hidden">Email address</label>
             <input type="email" id="email" name="email" class="form-control mt-1" placeholder="Email address" required
-                autofocus>
+                autofocus value="<?=isset($email) ? $email : ''?>">
             <label for="password" class="visually-hidden">Password</label>
             <input type="password" id="password" name="password" class="form-control" placeholder="Password"
                 required>

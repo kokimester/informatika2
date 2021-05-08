@@ -21,7 +21,7 @@ if(!isset($_GET['match']))
     header('Location: pending_matches.php?error=Match not found.');
     mysqli_close($link);
 }
-$matchid = $_GET['match'];
+$matchid = mysqli_real_escape_string($link,$_GET['match']);
 
 include 'update_match.php';
 

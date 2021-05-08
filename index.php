@@ -86,7 +86,6 @@ $query = "SELECT sub3.id, sub3.nev,sub3.discordid, sub3.elo, sum(sub3.win) as 'w
     order by sub3.elo desc;";
 }
 $eredmeny = mysqli_query($link, $query);
-print_r($eredmeny);
 
 if(isset($_GET['error'])){
     echo "<script>alert('".$_GET['error']."')</script>";

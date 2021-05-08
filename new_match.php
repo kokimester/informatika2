@@ -18,10 +18,13 @@ if (!$user) {
 include 'calculate_elo.php';
 include 'save_new_match.php';
 
-if(isset($error)){
-    echo "<script>alert('".$error."')</script>";
+if(isset($_GET['error'])){
+    echo "<script>alert('".$_GET['error']."')</script>";
    }
-
+if(isset($_GET['selfPoints']) && isset($_GET['opponentPoints'])){
+    $opponentPoints = $_GET['opponentPoints'];
+    $selfPoints = $_GET['selfPoints'];
+   }
 ?>
 
 <div class="container align-self-center">
@@ -63,12 +66,12 @@ if(isset($error)){
                             <input type="text" class="form-control" name="selfList" id="selfList" />
                         </td>
                         <td>
-                            <input type="number" class="form-control" name="selfShotDown" id="selfShotDown" required/>
+                            <input type="number" class="form-control" name="selfShotDown" id="selfShotDown" value="<?= isset($selfPoints) ? $selfPoints : '' ?>" required/>
                         </td>
                         <td>
                         </td>
                         <td>
-                            <input type="number" class="form-control" name="opponentShotDown" id="opponentShotDown" required/>
+                            <input type="number" class="form-control" name="opponentShotDown" id="opponentShotDown" value="<?= isset($opponentPoints) ?$opponentPoints : ''?>" required/>
                         </td>
                         <td>
                             Only your opponent can edit this.

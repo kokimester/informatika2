@@ -11,18 +11,22 @@
             <a class="<?= ($activePage == 'index') ? 'active':''; ?> nav-link" 
                 aria-current="page" href="index.php">Main page</a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" <?= (isset($_SESSION) && isset($_SESSION['belepve']) && ($_SESSION['belepve'] === true)) ? '' : 'hidden' ?>>
             <a class="<?= ($activePage == 'profile') ? 'active':''; ?> nav-link"
                  aria-current="page" href="profile.php">My profile</a>
           </li>
 
-          <li class="nav-item">
+          <li class="nav-item" <?= (isset($_SESSION) && isset($_SESSION['belepve']) && ($_SESSION['belepve'] === true)) ? '' : 'hidden' ?>>
             <a class="<?= ($activePage == 'mymatches') ? 'active':''; ?> nav-link"
                 aria-current="page" href="mymatches.php">My matches</a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" <?= (isset($_SESSION) && isset($_SESSION['belepve']) && ($_SESSION['belepve'] === true)) ? '' : 'hidden' ?>>
             <a class="<?= ($activePage == 'pending_matches') ? 'active':''; ?> nav-link"
                 aria-current="page" href="pending_matches.php">Pending matches</a>
+          </li>
+          <li class="nav-item" <?= (isset($_SESSION) && isset($_SESSION['admin']) && ($_SESSION['admin'] === true)) ? '' : 'hidden' ?>>
+            <a class="<?= ($activePage == 'admin') ? 'active':''; ?> nav-link"
+                aria-current="page" href="admin.php">Admin</a>
           </li>
         </ul> 
         <?php if( !(isset($_SESSION) && (isset($_SESSION['belepve'])) && ($_SESSION['belepve'] === true) ) ){ 
