@@ -88,7 +88,7 @@ include 'save_password_change.php';
                         </td>
                         <div class="form-group">
                             <td class="bg-white">
-                                <input type="text" class="form-control" id="discordid" name="discordid" 
+                                <input required type="text" class="form-control" id="discordid" name="discordid" 
                                 value='<?=  (isset($user['discordid']) ? $user['discordid'] : '') ?>'>
 
                             </td>
@@ -99,7 +99,7 @@ include 'save_password_change.php';
                         </td>
                         <div class="form-group">
                             <td class="bg-white">
-                                <input type="text" class="form-control" id="steamid" name="steamid"
+                                <input required type="text" class="form-control" id="steamid" name="steamid"
                                 value='<?=  isset($user['steamid']) ? $user['steamid'] : '' ?>'>
 
                             </td>

@@ -10,19 +10,11 @@ include_once 'check_if_logged_in.php';
 
 <?php
 
-
-//sessionbol le lesz kerve
 $user['id'] = $_SESSION['userid'];
 
 $query = "SELECT * FROM merkozes 
 WHERE (merkozes.player_1_id = '".$user['id']."' OR merkozes.player_2_id = '".$user['id']."') AND (merkozes.player_1_confirmed = '0' OR merkozes.player_2_confirmed = '0');";
 $eredmeny = mysqli_query($link, $query);
-
-//  7
-
-//$winner = (($self['shot-down'] > $opponent['shot-down']) ?  $self   :   $opponent);
-//$ret = EloRating($self['elo'], $opponent['elo'], 30, (($winner === $self) ? 1 : 2));
-//$points_change = round($ret[2], 1);
 
 if(isset($_GET['error'])){
  echo "<script>alert('".$_GET['error']."')</script>";
@@ -30,7 +22,7 @@ if(isset($_GET['error'])){
 ?>
 
 
-<div class="container align-self-center">
+<div class="container align-self-center p-5">
     <div class="row text-black-50 justify-content-md-center">
         <div class="col-12">
             <table class="card table table-striped table-bordered bg-light align-middle text-center">

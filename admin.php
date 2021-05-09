@@ -16,6 +16,7 @@ include_once 'check_if_logged_in.php';
 
 <?php
 
+$_SESSION['change_elo'] = true;
 $user['id'] = $_SESSION['userid'];
 
 if(isset($_POST['searchBy']))
@@ -24,7 +25,8 @@ if(isset($_POST['searchBy']))
     $subquery = mysqli_query($link, "SELECT * FROM user WHERE nev like '%$searchBy%';");
     if($searchForUser = mysqli_fetch_assoc($subquery))
     {
-        $query = "SELECT * FROM merkozes WHERE player_1_id = '".$searchForUser['id']."' OR player_2_id = '".$searchForUser['id']."'";
+        $query = "SELECT * FROM merkozes WHERE (player_1_id = '".$searchForUser['id']."' OR player_2_id = '".$searchForUser['id']."')
+                                            AND player_1_confirmed = '1' AND player_2_confirmed = '1'";
     }
     else
     {
@@ -33,7 +35,7 @@ if(isset($_POST['searchBy']))
 }
 else
 {
-    $query = "SELECT * FROM merkozes";
+    $query = "SELECT * FROM merkozes WHERE player_1_confirmed = '1' AND player_2_confirmed = '1'";
 }
 
 $eredmeny = mysqli_query($link, $query);

@@ -32,7 +32,7 @@
         <?php if( !(isset($_SESSION) && (isset($_SESSION['belepve'])) && ($_SESSION['belepve'] === true) ) ){ 
          echo '<form><a class="btn btn-success" href="login.php" role="button">Login</a></form>';
           } else{   
-         echo '<h4 class="text-white text-center mr-2"> Welcome, '.$_SESSION['nev'].'</h4><span>aaa</span><form><a class="btn btn-danger" href="logout.php" role="button" onclick="return confirm(\'Are you sure you want to logout?\');">Logout</a></form>';
+         echo '<h4 class="text-white text-center mr-2 p-2"> Welcome, '.$_SESSION['nev'].'</h4><form><a class="ml-2 btn btn-danger" href="logout.php" role="button" onclick="return confirm(\'Are you sure you want to logout?\');">Logout</a></form>';
          } 
 
         ?>

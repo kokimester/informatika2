@@ -11,24 +11,17 @@ include_once 'check_if_logged_in.php';
 <?php
 
 
-//sessionbol le lesz kerve
 $user['id'] = $_SESSION['userid'];
 
 $query = "SELECT * FROM merkozes WHERE (merkozes.player_1_id = '".$user['id']."' OR merkozes.player_2_id = '".$user['id']."');";
 $eredmeny = mysqli_query($link, $query);
-
-
-
-//$winner = (($self['shot-down'] > $opponent['shot-down']) ?  $self   :   $opponent);
-//$ret = EloRating($self['elo'], $opponent['elo'], 30, (($winner === $self) ? 1 : 2));
-//$points_change = round($ret[2], 1);
 
 if(isset($_GET['error'])){
  echo "<script>alert('".$_GET['error']."')</script>";
 }
 ?>
 
-<div class="container mb-3">
+<div class="container p-2">
     <div class="row text-center">
         <div class="col-12">
             <form><a class="btn btn-lg btn-success" href="new_match.php" role="button"><i class="fas fa-plus-circle"></i> Add new match</a></form>
@@ -36,7 +29,7 @@ if(isset($_GET['error'])){
     </div>
 </div>
 
-<div class="container align-self-center">
+<div class="container align-self-center p-1">
     <div class="row text-black-50 justify-content-md-center">
         <div class="col-12">
             <table class="card table table-striped table-bordered bg-light align-middle text-center">

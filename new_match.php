@@ -27,7 +27,7 @@ if(isset($_GET['selfPoints']) && isset($_GET['opponentPoints'])){
    }
 ?>
 
-<div class="container align-self-center">
+<div class="container align-self-center p-5">
     <div class="row text-white">
         <div class="col-12">
         

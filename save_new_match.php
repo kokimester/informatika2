@@ -17,36 +17,38 @@ $sShotDown = $_POST['selfShotDown'];
 $oShotDown = $_POST['opponentShotDown'];
 $oName = $_POST['opponentName'];
 
+$sList = mysqli_real_escape_string($link,$sList);
+$sShotDown = mysqli_real_escape_string($link,$sShotDown);
+$oShotDown = mysqli_real_escape_string($link,$oShotDown);
+
 if($sShotDown > 200 || $oShotDown > 200 || $sShotDown < 0 || $oShotDown < 0)
 {
     $error = isset($error) ? $error : 'Points cant exceed 200 and cant be negative.';
-    return;
+    header('Location: new_match.php?error='.$error.'&selfPoints='.$sShotDown.'&opponentPoints='.$oShotDown);
+    exit;
 }
 if($sShotDown === $oShotDown)
 {
     $error = isset($error) ? $error : 'Match cannot end in stalemate. Provide 1 more point for the winner,or 1 less for the loser.';
-    return;
+    header('Location: new_match.php?error='.$error.'&selfPoints='.$sShotDown.'&opponentPoints='.$oShotDown);
+    exit;
 }
 $oName = mysqli_real_escape_string($link,$oName);
-$query = "SELECT id,nev,discordid,steamid,elo FROM user WHERE nev LIKE '%$oName%';";
+$query = "SELECT id,nev,discordid,steamid,elo FROM user WHERE nev = '$oName';";
 $eredmeny = mysqli_query($link,$query);
 $opponent = mysqli_fetch_assoc($eredmeny);
 
 if($opponent === null || ($eredmeny -> num_rows) > 1 )
 {
     $error = isset($error) ? $error : 'Opponent cant be found. Check spelling.';
-    return;
+    header('Location: new_match.php?error='.$error.'&selfPoints='.$sShotDown.'&opponentPoints='.$oShotDown);
+    exit;
 }
-
-$foundOpponent="Opponent found: ".$opponent['nev'].(isset($opponent['discordid']) ? " Discord: ".$opponent['discordid'] : "").(isset($opponent['steamid']) ? " Steam: ".$opponent['steamid'] : "");
 
 $query = "SELECT id,nev,elo FROM user WHERE id = ".$user['id'].";";
 $eredmeny = mysqli_query($link,$query);
 $self = mysqli_fetch_array($eredmeny);
 
-$sList = mysqli_real_escape_string($link,$sList);
-$sShotDown = mysqli_real_escape_string($link,$sShotDown);
-$oShotDown = mysqli_real_escape_string($link,$oShotDown);
 
 if($opponent['id'] == $self['id'])
 {
@@ -72,6 +74,6 @@ $insert = "INSERT INTO merkozes(player_1_confirmed, player_1_id, player_2_id, pl
                         VALUES('1','{$player_1_id}','{$player_2_id}','{$player_1_list}','{$player_1_points}','{$player_2_points}','{$points_change}')";
 mysqli_query($link, $insert);
 mysqli_close($link);
-header('Location: mymatches.php?error=Match added succesfully. '.$foundOpponent);
+header('Location: mymatches.php?error=Match added succesfully.');
 } 
 

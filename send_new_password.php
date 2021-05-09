@@ -32,15 +32,22 @@ $link = opendb();
     if($user = mysqli_fetch_assoc($eredmeny))
     {
         $password = generatePassword(12);
-        $hasUpperCase = preg_match('/[A-Z]/',$password);
-        $hasLowerCase = preg_match('/[a-z]/',$password);
-        $hasNumbers = preg_match('/\d/',$password);
-    
+        
+        $to = $email_id;
+        $subject = "Password";
+        $txt = "Your password is : $password.";
+        $headers = "From: password@xwingelo.com" . "\r\n" .
+        "CC: fejesdani@gmail.com";
+        if(mail($to,$subject,$txt,$headers))
+        {
+            $error = 'check your mail';
+        }
+
         $userid = $user['id'];
         $newpass = hash($hashalgorithm,$password);
         $update = "UPDATE user SET jelszo = '".$newpass."' WHERE user.id = '".$userid."';";
         mysqli_query($link,$update);
-        $error = "Your new password is: ".$password;
+        $error = $txt;
     }
     else{
     $error="User not found.";
