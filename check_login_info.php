@@ -17,7 +17,6 @@ $link = opendb();
     {
         if($user['jelszo'] === $password)
         {
-            //belepes
             $_SESSION['belepve'] = true;
             $_SESSION['userid'] =$user['id'];
             $_SESSION['nev'] = $user['nev'];

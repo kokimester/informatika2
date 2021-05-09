@@ -8,10 +8,7 @@ include_once 'check_if_logged_in.php';
 ?>
 
 <?php
-
-// sessionbol kell majd lekerni
 $userid = $_SESSION['userid'];
-
 
 $query = "SELECT * FROM user WHERE user.id = $userid LIMIT 0, 1";
 $eredmeny = mysqli_query($link, $query);

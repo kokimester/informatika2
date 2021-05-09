@@ -9,8 +9,7 @@ if(isset($_POST['selfList']) &&
 )
 {
 
-    //sessionbol jon
-    $user['id'] = $_SESSION['userid'];
+$user['id'] = $_SESSION['userid'];
 
 $sList = $_POST['selfList'];
 $sShotDown = $_POST['selfShotDown'];

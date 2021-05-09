@@ -14,7 +14,6 @@ if (isset($_GET['term'])) {
     } else {
       $res = array();
     }
-    //return json res
     echo json_encode($res);
 }
 ?>

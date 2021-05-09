@@ -9,7 +9,6 @@ if(!isset($_GET['match']))
     mysqli_close($link);
 }
 
-//SESSIONBOL JON
 $user['id'] = $_SESSION['userid'];
 
 

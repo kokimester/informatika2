@@ -34,9 +34,7 @@
           } else{   
          echo '<h4 class="text-white text-center mr-2 p-2"> Welcome, '.$_SESSION['nev'].'</h4><form><a class="ml-2 btn btn-danger" href="logout.php" role="button" onclick="return confirm(\'Are you sure you want to logout?\');">Logout</a></form>';
          } 
-
         ?>
-        <!--<h1> Welcome, {$_SESSION['nev']}</h1> -->
         
       </div>
     </div>

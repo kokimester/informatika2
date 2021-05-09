@@ -8,7 +8,6 @@ $pagetitle = 'Register';
     include 'save_new_user.php';
 ?>
 
-
     <div class="container">
         <div class="row">
             <div class="col-6 bg-light align-self-auto m-auto mt-5 kerekitett">
