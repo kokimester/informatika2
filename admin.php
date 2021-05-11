@@ -7,10 +7,9 @@ include 'db.php';
 $link = opendb();
 include_once 'check_if_logged_in.php';
 
-    if( ($_SESSION['admin'] !== true)  )
-    {
-        header('Location: index.php?error=For admins only.');
-    }
+if (($_SESSION['admin'] !== true)) {
+    header('Location: index.php?error=For admins only.');
+}
 
 ?>
 
@@ -19,30 +18,24 @@ include_once 'check_if_logged_in.php';
 $_SESSION['change_elo'] = true;
 $user['id'] = $_SESSION['userid'];
 
-if(isset($_POST['searchBy']))
-{
-    $searchBy=mysqli_real_escape_string($link, $_POST['searchBy']);
+if (isset($_POST['searchBy'])) {
+    $searchBy = mysqli_real_escape_string($link, $_POST['searchBy']);
     $subquery = mysqli_query($link, "SELECT * FROM user WHERE nev like '%$searchBy%';");
-    if($searchForUser = mysqli_fetch_assoc($subquery))
-    {
-        $query = "SELECT * FROM merkozes WHERE (player_1_id = '".$searchForUser['id']."' OR player_2_id = '".$searchForUser['id']."')
+    if ($searchForUser = mysqli_fetch_assoc($subquery)) {
+        $query = "SELECT * FROM merkozes WHERE (player_1_id = '" . $searchForUser['id'] . "' OR player_2_id = '" . $searchForUser['id'] . "')
                                             AND player_1_confirmed = '1' AND player_2_confirmed = '1'";
-    }
-    else
-    {
+    } else {
         header('Location: admin.php?error=No such user.');
     }
-}
-else
-{
+} else {
     $query = "SELECT * FROM merkozes WHERE player_1_confirmed = '1' AND player_2_confirmed = '1'";
 }
 
 $eredmeny = mysqli_query($link, $query);
+$userek = mysqli_query($link, "SELECT * FROM user");
 
-
-if(isset($_GET['error'])){
- echo "<script>alert('".$_GET['error']."')</script>";
+if (isset($_GET['error'])) {
+    echo "<script>alert('" . $_GET['error'] . "')</script>";
 }
 ?>
 
@@ -80,7 +73,10 @@ if(isset($_GET['error'])){
                         Player 2
                     </th>
                     <th class="col-2">
-                    &nbsp;
+                        &nbsp;
+                    </th>
+                    <th class="col-2">
+                        &nbsp;
                     </th>
                 </tr>
 
@@ -105,14 +101,11 @@ if(isset($_GET['error'])){
                     $winner = (($row['player_1_points'] > $row['player_2_points']) ?  $player1   :   $player2);
                     $loser = (($row['player_1_points'] > $row['player_2_points']) ?  $player2   :   $player1);
 
-                    //$ret = EloRating($self['elo'], $opponent['elo'], 30, (($winner === $self) ? 1 : 2));
-                    //$points_change = round($ret[2], 1);
                     $points_change = $row['elo_change'];
                     ?>
                     <tr>
                         <td>
-                            <a class="btn btn-primary" 
-                            href=<?= "profile.php?user=".$row['player_1_id'] ?> > <?= $player1['nev'] ?> </a>
+                            <a class="btn btn-primary" href=<?= "profile.php?user=" . $row['player_1_id'] ?>> <?= $player1['nev'] ?> </a>
                         </td>
                         <td>
                             <?php echo ($player1 === $winner ? "+" : "-") . $points_change; ?>
@@ -137,7 +130,7 @@ if(isset($_GET['error'])){
                         <td>
                             <?php if (isset($row['player_2_list']) && !empty($row['player_2_list'])) {
 
-                                echo "<a href=".$row['player_2_list']."> Link </a>";
+                                echo "<a href=" . $row['player_2_list'] . "> Link </a>";
                             } else {
                                 echo '<a>List not found</a>';
                             }
@@ -147,43 +140,71 @@ if(isset($_GET['error'])){
                             <?php echo ($player2 === $winner ? "+" : "-") . $points_change; ?>
                         </td>
                         <td class="text-right">
-                            <a class="btn btn-primary" href="<?="profile.php?user=". $player2['id'] ?>"> <?= $player2['nev'] ?> </a>
+                            <a class="btn btn-primary" href="<?= "profile.php?user=" . $player2['id'] ?>"> <?= $player2['nev'] ?> </a>
                         </td>
                         <td>
-                        <a class="btn btn-danger" href="<?="delete_match.php?match=".$row['id']?>" onclick="return confirm('Are you sure you want to delete this match?');">  Delete </a>
+                            <a class="btn btn-warning" href="<?= "edit_match_admin.php?match=" . $row['id'] ?>"> Edit players </a>
+                        </td>
+                        <td>
+                            <a class="btn btn-danger" href="<?= "delete_match.php?match=" . $row['id'] ?>" onclick="return confirm('Are you sure you want to delete this match?');"> Delete </a>
                         </td>
                     </tr>
                 <?php endwhile; ?>
             </table>
         </div>
         <div class="col-3">
-            
-          <h3 class="text-white">Search for a player</h3>
-          <form method="POST">
-            <input type="text" class="form-control" id="searchBy" name="searchBy">
-            <input type="submit" class="btn-lg btn-primary mb-1 mt-2" value="Search"/>
-          </form>
-           
+
+            <h3 class="text-white">Search for a player</h3>
+            <form method="POST">
+                <input type="text" class="form-control" id="searchBy" name="searchBy">
+                <input type="submit" class="btn-lg btn-primary mb-1 mt-2" value="Search" />
+            </form>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row text-black-50 justify-content-md-center">
+        <div class="col-12">
+            <table class="table table-striped table-bordered bg-light align-middle text-center">
+                <tr>
+                    <th class="col-6">
+                        User name
+                    </th>
+                    <th class="col-6">
+                        &nbsp;
+                    </th>
+                </tr>
+                <?php while ($egyuser = mysqli_fetch_array($userek)) : ?>
+                    <tr>
+                        <td class="col-6">
+                            <?= $egyuser['nev'] ?>
+                        </td>
+                        <td class="col-6">
+                            <a class="btn btn-danger" href="<?= "delete_user.php?user=" . $egyuser['id'] ?>" onclick="return confirm('Are you sure you want to delete this user?');"> Delete user </a>
+                        </td>
+                    </tr>
+                <?php endwhile; ?>
+            </table>
         </div>
     </div>
 </div>
 
 
 <script type="text/javascript">
-  $(function() {
-     $( "#searchBy" ).autocomplete({
-       source: 'quick_db_search.php',
-     });
-  });
+    $(function() {
+        $("#searchBy").autocomplete({
+            source: 'quick_db_search.php',
+        });
+    });
 </script>
 
 <!-- Script -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
- 
+
 <!-- jQuery UI -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" />
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
- 
+
 
 
 
