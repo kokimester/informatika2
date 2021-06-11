@@ -20,6 +20,7 @@ $user['id'] = $_SESSION['userid'];
 
 if (isset($_POST['searchBy'])) {
     $searchBy = mysqli_real_escape_string($link, $_POST['searchBy']);
+    $userquery = "SELECT * FROM user WHERE nev like '%$searchBy%';";
     $subquery = mysqli_query($link, "SELECT * FROM user WHERE nev like '%$searchBy%';");
     if ($searchForUser = mysqli_fetch_assoc($subquery)) {
         $query = "SELECT * FROM merkozes WHERE (player_1_id = '" . $searchForUser['id'] . "' OR player_2_id = '" . $searchForUser['id'] . "')
@@ -28,11 +29,12 @@ if (isset($_POST['searchBy'])) {
         header('Location: admin.php?error=No such user.');
     }
 } else {
+    $userquery = "SELECT * FROM user";
     $query = "SELECT * FROM merkozes WHERE player_1_confirmed = '1' AND player_2_confirmed = '1'";
 }
 
 $eredmeny = mysqli_query($link, $query);
-$userek = mysqli_query($link, "SELECT * FROM user");
+$userek = mysqli_query($link, $userquery);
 
 if (isset($_GET['error'])) {
     echo "<script>alert('" . $_GET['error'] . "')</script>";
@@ -42,7 +44,7 @@ if (isset($_GET['error'])) {
 
 <div class="container align-self-center">
     <div class="row text-black-50 justify-content-md-center">
-        <div class="col-9">
+        <div class="col-12">
             <table class="card table table-striped table-bordered bg-light align-middle text-center">
                 <tr>
                     <th class="col-2">
@@ -71,9 +73,6 @@ if (isset($_GET['error'])) {
                     </th>
                     <th class="col-2">
                         Player 2
-                    </th>
-                    <th class="col-2">
-                        &nbsp;
                     </th>
                     <th class="col-2">
                         &nbsp;
@@ -143,28 +142,17 @@ if (isset($_GET['error'])) {
                             <a class="btn btn-primary" href="<?= "profile.php?user=" . $player2['id'] ?>"> <?= $player2['nev'] ?> </a>
                         </td>
                         <td>
-                            <a class="btn btn-warning" href="<?= "edit_match_admin.php?match=" . $row['id'] ?>"> Edit players </a>
-                        </td>
-                        <td>
                             <a class="btn btn-danger" href="<?= "delete_match.php?match=" . $row['id'] ?>" onclick="return confirm('Are you sure you want to delete this match?');"> Delete </a>
                         </td>
                     </tr>
                 <?php endwhile; ?>
             </table>
         </div>
-        <div class="col-3">
-
-            <h3 class="text-white">Search for a player</h3>
-            <form method="POST">
-                <input type="text" class="form-control" id="searchBy" name="searchBy">
-                <input type="submit" class="btn-lg btn-primary mb-1 mt-2" value="Search" />
-            </form>
-        </div>
     </div>
 </div>
 <div class="container">
     <div class="row text-black-50 justify-content-md-center">
-        <div class="col-12">
+        <div class="col-6">
             <table class="table table-striped table-bordered bg-light align-middle text-center">
                 <tr>
                     <th class="col-6">
@@ -186,6 +174,15 @@ if (isset($_GET['error'])) {
                 <?php endwhile; ?>
             </table>
         </div>
+        <div class="col-6">
+
+            <h3 class="text-white">Search for a player</h3>
+            <form method="POST">
+                <input type="text" class="form-control" id="searchBy" name="searchBy">
+                <input type="submit" class="btn-lg btn-primary mb-1 mt-2" value="Search" />
+            </form>
+        </div>
+
     </div>
 </div>
 
